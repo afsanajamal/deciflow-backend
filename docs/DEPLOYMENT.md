@@ -2,11 +2,11 @@
 
 ## Prerequisites
 
-- Linux server (Ubuntu 20.04+ recommended)
+- Linux server (Ubuntu 22.04+ recommended)
 - Domain name with DNS configured
 - SSL certificate (Let's Encrypt recommended)
 - MySQL 8.0 or compatible
-- PHP 8.2+ with required extensions
+- PHP 8.4+ with required extensions
 - Composer
 - Nginx or Apache web server
 - Supervisor (for queue workers)
@@ -36,12 +36,12 @@ sudo apt update
 sudo apt install -y \
   nginx \
   mysql-server \
-  php8.2-fpm \
-  php8.2-mysql \
-  php8.2-mbstring \
-  php8.2-xml \
-  php8.2-bcmath \
-  php8.2-curl \
+  php8.4-fpm \
+  php8.4-mysql \
+  php8.4-mbstring \
+  php8.4-xml \
+  php8.4-bcmath \
+  php8.4-curl \
   supervisor \
   git \
   composer
@@ -221,7 +221,7 @@ server {
     }
 
     location ~ \.php$ {
-        fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;
         fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
         include fastcgi_params;
         fastcgi_hide_header X-Powered-By;
@@ -417,7 +417,7 @@ jobs:
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
-            sudo systemctl reload php8.2-fpm
+            sudo systemctl reload php8.4-fpm
             sudo supervisorctl restart deciflow-worker:*
 ```
 
@@ -440,7 +440,7 @@ php artisan view:clear
 php artisan cache:clear
 
 # Restart services
-sudo systemctl reload php8.2-fpm
+sudo systemctl reload php8.4-fpm
 sudo supervisorctl restart deciflow-worker:*
 ```
 
@@ -473,7 +473,7 @@ Monitor:
 
 ### 1. OPcache
 
-Edit `/etc/php/8.2/fpm/php.ini`:
+Edit `/etc/php/8.4/fpm/php.ini`:
 
 ```ini
 opcache.enable=1

@@ -28,7 +28,7 @@ Procurement / Budget Approval Support System - Laravel 11 REST API
 
 ## Requirements
 
-- PHP 8.2+
+- PHP 8.4+
 - Composer 2.x
 - Docker & Docker Compose
 
