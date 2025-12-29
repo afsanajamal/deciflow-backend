@@ -24,7 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (\Illuminate\Auth\AuthenticationException $e, $request) {
             if ($request->is('api/*')) {
                 return response()->json([
-                    'message' => 'Unauthenticated.'
+                    'message' => 'Unauthenticated.',
                 ], 401);
             }
         });
@@ -35,8 +35,8 @@ return Application::configure(basePath: dirname(__DIR__))
                     'error' => [
                         'code' => 'VALIDATION_ERROR',
                         'message' => $e->getMessage(),
-                        'errors' => $e->errors()
-                    ]
+                        'errors' => $e->errors(),
+                    ],
                 ], 422);
             }
         });
@@ -44,7 +44,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (\Illuminate\Database\Eloquent\ModelNotFoundException $e, $request) {
             if ($request->is('api/*')) {
                 return response()->json([
-                    'message' => 'Resource not found'
+                    'message' => 'Resource not found',
                 ], 404);
             }
         });
@@ -52,7 +52,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e, $request) {
             if ($request->is('api/*')) {
                 return response()->json([
-                    'message' => 'Endpoint not found'
+                    'message' => 'Endpoint not found',
                 ], 404);
             }
         });
@@ -60,18 +60,18 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException $e, $request) {
             if ($request->is('api/*')) {
                 return response()->json([
-                    'message' => 'Method not allowed'
+                    'message' => 'Method not allowed',
                 ], 405);
             }
         });
 
         $exceptions->render(function (\Throwable $e, $request) {
-            if ($request->is('api/*') && !config('app.debug')) {
+            if ($request->is('api/*') && ! config('app.debug')) {
                 return response()->json([
                     'error' => [
                         'code' => 'SERVER_ERROR',
-                        'message' => 'Internal server error'
-                    ]
+                        'message' => 'Internal server error',
+                    ],
                 ], 500);
             }
         });

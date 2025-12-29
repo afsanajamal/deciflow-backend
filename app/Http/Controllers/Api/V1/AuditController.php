@@ -17,15 +17,19 @@ class AuditController extends Controller
      *     summary="List all audit logs",
      *     description="Get all audit logs across all requests (super admin only)",
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Paginated list of audit logs",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="data", type="array", @OA\Items(type="object")),
      *             @OA\Property(property="current_page", type="integer"),
      *             @OA\Property(property="total", type="integer")
      *         )
      *     ),
+     *
      *     @OA\Response(response=403, description="Unauthorized - super admin only")
      * )
      */
@@ -36,8 +40,8 @@ class AuditController extends Controller
             return response()->json([
                 'error' => [
                     'code' => 'UNAUTHORIZED',
-                    'message' => 'Only super admins can view all audit logs'
-                ]
+                    'message' => 'Only super admins can view all audit logs',
+                ],
             ], 403);
         }
 
@@ -57,18 +61,23 @@ class AuditController extends Controller
      *     summary="Get request audit trail",
      *     description="Get all audit logs for a specific request",
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
      *         description="Request ID",
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="List of audit logs for the request",
+     *
      *         @OA\JsonContent(type="array", @OA\Items(type="object"))
      *     ),
+     *
      *     @OA\Response(response=404, description="Request not found")
      * )
      */

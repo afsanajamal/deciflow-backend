@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use App\Models\Role;
 use App\Models\Department;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -15,11 +15,11 @@ class AuthTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Create roles and department
         $role = Role::create(['name' => 'requester']);
         $department = Department::create(['name' => 'IT']);
-        
+
         // Create a test user
         User::create([
             'name' => 'Test User',
@@ -59,7 +59,7 @@ class AuthTest extends TestCase
         $user = User::where('email', 'test@example.com')->first();
         $token = $user->createToken('test-token')->plainTextToken;
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->getJson('/api/v1/me');
 
         $response->assertStatus(200)
@@ -74,11 +74,11 @@ class AuthTest extends TestCase
         $user = User::where('email', 'test@example.com')->first();
         $token = $user->createToken('test-token')->plainTextToken;
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->postJson('/api/v1/auth/logout');
 
         $response->assertStatus(200);
-        
+
         // Verify token is revoked
         $this->assertEquals(0, $user->tokens()->count());
     }

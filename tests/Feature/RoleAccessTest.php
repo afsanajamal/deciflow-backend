@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use App\Models\Role;
 use App\Models\Department;
 use App\Models\Request;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -14,24 +14,28 @@ class RoleAccessTest extends TestCase
     use RefreshDatabase;
 
     protected $requester;
+
     protected $approver;
+
     protected $deptAdmin;
+
     protected $superAdmin;
+
     protected $department;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Create roles
         $requesterRole = Role::create(['name' => 'requester']);
         $approverRole = Role::create(['name' => 'approver']);
         $deptAdminRole = Role::create(['name' => 'dept_admin']);
         $superAdminRole = Role::create(['name' => 'super_admin']);
-        
+
         // Create department
         $this->department = Department::create(['name' => 'IT']);
-        
+
         // Create users
         $this->requester = User::create([
             'name' => 'Requester',
@@ -80,8 +84,8 @@ class RoleAccessTest extends TestCase
         ]);
 
         $token = $this->requester->createToken('test')->plainTextToken;
-        
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->getJson("/api/v1/requests/{$request->id}");
 
         $response->assertStatus(200);
@@ -109,8 +113,8 @@ class RoleAccessTest extends TestCase
         ]);
 
         $token = $this->requester->createToken('test')->plainTextToken;
-        
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->getJson("/api/v1/requests/{$request->id}");
 
         $response->assertStatus(403);
@@ -130,8 +134,8 @@ class RoleAccessTest extends TestCase
         ]);
 
         $token = $this->requester->createToken('test')->plainTextToken;
-        
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->putJson("/api/v1/requests/{$request->id}", [
                 'title' => 'Updated',
             ]);
@@ -153,8 +157,8 @@ class RoleAccessTest extends TestCase
         ]);
 
         $token = $this->requester->createToken('test')->plainTextToken;
-        
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->putJson("/api/v1/requests/{$request->id}", [
                 'title' => 'Updated',
             ]);
@@ -176,8 +180,8 @@ class RoleAccessTest extends TestCase
         ]);
 
         $token = $this->deptAdmin->createToken('test')->plainTextToken;
-        
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->getJson("/api/v1/requests/{$request->id}");
 
         $response->assertStatus(200);
@@ -197,8 +201,8 @@ class RoleAccessTest extends TestCase
         ]);
 
         $token = $this->superAdmin->createToken('test')->plainTextToken;
-        
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->getJson("/api/v1/requests/{$request->id}");
 
         $response->assertStatus(200);
@@ -265,12 +269,12 @@ class RoleAccessTest extends TestCase
         ]);
 
         $token = $this->requester->createToken('test')->plainTextToken;
-        
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->postJson("/api/v1/requests/{$ownRequest->id}/cancel");
 
         $response->assertStatus(200);
-        
+
         // Cannot cancel others' requests
         $otherRequest = Request::create([
             'user_id' => $this->approver->id,
@@ -283,7 +287,7 @@ class RoleAccessTest extends TestCase
             'status' => 'SUBMITTED',
         ]);
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->postJson("/api/v1/requests/{$otherRequest->id}/cancel");
 
         $response->assertStatus(403);

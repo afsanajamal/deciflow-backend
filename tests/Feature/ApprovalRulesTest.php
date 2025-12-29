@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use App\Models\Role;
+use App\Models\ApprovalStep;
 use App\Models\Department;
 use App\Models\Request;
-use App\Models\ApprovalStep;
-use App\Services\RuleEngineService;
+use App\Models\Role;
+use App\Models\User;
 use App\Services\ApprovalService;
+use App\Services\RuleEngineService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -17,24 +17,28 @@ class ApprovalRulesTest extends TestCase
     use RefreshDatabase;
 
     protected $requester;
+
     protected $approver;
+
     protected $deptAdmin;
+
     protected $superAdmin;
+
     protected $ruleEngine;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Create roles
         $requesterRole = Role::create(['name' => 'requester']);
         $approverRole = Role::create(['name' => 'approver']);
         $deptAdminRole = Role::create(['name' => 'dept_admin']);
         $superAdminRole = Role::create(['name' => 'super_admin']);
-        
+
         // Create department
         $department = Department::create(['name' => 'IT']);
-        
+
         // Create users
         $this->requester = User::create([
             'name' => 'Requester',
@@ -68,7 +72,7 @@ class ApprovalRulesTest extends TestCase
             'department_id' => $department->id,
         ]);
 
-        $this->ruleEngine = new RuleEngineService();
+        $this->ruleEngine = new RuleEngineService;
     }
 
     public function test_small_amount_requires_one_approval_step()
@@ -124,10 +128,10 @@ class ApprovalRulesTest extends TestCase
         $approvalService->submitRequest($request, $this->requester);
 
         $request->refresh();
-        
+
         $this->assertEquals('IN_REVIEW', $request->status);
         $this->assertEquals(2, $request->approvalSteps()->count());
-        
+
         $this->assertDatabaseHas('approval_steps', [
             'request_id' => $request->id,
             'step_number' => 1,

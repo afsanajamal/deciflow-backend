@@ -17,9 +17,11 @@ class RuleController extends Controller
      *     summary="List all rules",
      *     description="Get all approval rules (admin only)",
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Response(
      *         response=200,
      *         description="List of rules",
+     *
      *         @OA\JsonContent(type="array", @OA\Items(type="object"))
      *     )
      * )
@@ -27,6 +29,7 @@ class RuleController extends Controller
     public function index()
     {
         $rules = Rule::orderBy('min_amount')->get();
+
         return response()->json($rules);
     }
 
@@ -39,28 +42,36 @@ class RuleController extends Controller
      *     summary="Create rule",
      *     description="Create a new approval rule (admin only)",
      *     security={{"sanctum":{}}},
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"name","min_amount","approval_steps_json"},
+     *
      *             @OA\Property(property="name", type="string", example="Low value purchases"),
      *             @OA\Property(property="min_amount", type="integer", example=0, description="Minimum amount in JPY"),
      *             @OA\Property(property="max_amount", type="integer", example=100000, description="Maximum amount in JPY"),
      *             @OA\Property(
      *                 property="approval_steps_json",
      *                 type="array",
+     *
      *                 @OA\Items(type="string"),
      *                 example={"dept_admin", "approver"}
      *             ),
+     *
      *             @OA\Property(property="category", type="string", example="EQUIPMENT"),
      *             @OA\Property(property="is_active", type="boolean", example=true)
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=201,
      *         description="Rule created successfully",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=422, description="Validation error")
      * )
      */
@@ -89,16 +100,21 @@ class RuleController extends Controller
      *     summary="Update rule",
      *     description="Update an existing approval rule (admin only)",
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
      *         description="Rule ID",
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="name", type="string"),
      *             @OA\Property(property="min_amount", type="integer"),
      *             @OA\Property(property="max_amount", type="integer"),
@@ -107,11 +123,14 @@ class RuleController extends Controller
      *             @OA\Property(property="is_active", type="boolean")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Rule updated successfully",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=422, description="Validation error"),
      *     @OA\Response(response=404, description="Rule not found")
      * )
@@ -143,20 +162,26 @@ class RuleController extends Controller
      *     summary="Delete rule",
      *     description="Delete an approval rule (admin only)",
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
      *         description="Rule ID",
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Rule deleted successfully",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="message", type="string", example="Rule deleted successfully")
      *         )
      *     ),
+     *
      *     @OA\Response(response=404, description="Rule not found")
      * )
      */

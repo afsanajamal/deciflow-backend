@@ -75,7 +75,7 @@ class RequestPolicy
     {
         // Owner can cancel before final decision
         if ($request->user_id === $user->id) {
-            return !in_array($request->status, ['APPROVED', 'REJECTED', 'ARCHIVED']);
+            return ! in_array($request->status, ['APPROVED', 'REJECTED', 'ARCHIVED']);
         }
 
         return false;

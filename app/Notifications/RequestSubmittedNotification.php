@@ -34,15 +34,15 @@ class RequestSubmittedNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $url = env('FRONTEND_URL', 'http://localhost:3000') . '/requests/' . $this->request->id;
+        $url = env('FRONTEND_URL', 'http://localhost:3000').'/requests/'.$this->request->id;
 
         return (new MailMessage)
-            ->subject('Request Submitted: ' . $this->request->title)
-            ->greeting('Hello ' . $this->request->user->name . ',')
+            ->subject('Request Submitted: '.$this->request->title)
+            ->greeting('Hello '.$this->request->user->name.',')
             ->line('Your request has been successfully submitted for approval.')
-            ->line('**Title:** ' . $this->request->title)
-            ->line('**Category:** ' . $this->request->category)
-            ->line('**Amount:** ¥' . number_format($this->request->amount))
+            ->line('**Title:** '.$this->request->title)
+            ->line('**Category:** '.$this->request->category)
+            ->line('**Amount:** ¥'.number_format($this->request->amount))
             ->line('Your request is now being reviewed by the approval team.')
             ->action('View Request', $url)
             ->line('Thank you for using DeciFlow!');

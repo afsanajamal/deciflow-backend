@@ -35,18 +35,18 @@ class RequestReturnedNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $url = env('FRONTEND_URL', 'http://localhost:3000') . '/requests/' . $this->request->id . '/edit';
+        $url = env('FRONTEND_URL', 'http://localhost:3000').'/requests/'.$this->request->id.'/edit';
 
         $message = (new MailMessage)
-            ->subject('Request Returned: ' . $this->request->title)
-            ->greeting('Hello ' . $this->request->user->name . ',')
+            ->subject('Request Returned: '.$this->request->title)
+            ->greeting('Hello '.$this->request->user->name.',')
             ->line('Your request has been returned and requires modifications.')
-            ->line('**Title:** ' . $this->request->title)
-            ->line('**Category:** ' . $this->request->category)
-            ->line('**Amount:** ¥' . number_format($this->request->amount));
+            ->line('**Title:** '.$this->request->title)
+            ->line('**Category:** '.$this->request->category)
+            ->line('**Amount:** ¥'.number_format($this->request->amount));
 
         if ($this->comment) {
-            $message->line('**Feedback:** ' . $this->comment);
+            $message->line('**Feedback:** '.$this->comment);
         }
 
         return $message

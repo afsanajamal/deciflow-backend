@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 class RequestController extends Controller
 {
     use AuthorizesRequests;
+
     public function __construct(
         private ApprovalService $approvalService,
         private StateMachineService $stateMachine
@@ -28,25 +29,33 @@ class RequestController extends Controller
      *     summary="List all requests",
      *     description="Get paginated list of requests with optional filters",
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Parameter(
      *         name="status",
      *         in="query",
      *         description="Filter by status",
+     *
      *         @OA\Schema(type="string", enum={"DRAFT", "SUBMITTED", "IN_REVIEW", "RETURNED", "APPROVED", "REJECTED", "CANCELLED", "ARCHIVED"})
      *     ),
+     *
      *     @OA\Parameter(
      *         name="category",
      *         in="query",
      *         description="Filter by category",
+     *
      *         @OA\Schema(type="string", enum={"EQUIPMENT", "SOFTWARE", "SERVICE", "TRAVEL"})
      *     ),
+     *
      *     @OA\Parameter(name="department_id", in="query", description="Filter by department ID", @OA\Schema(type="integer")),
      *     @OA\Parameter(name="amount_min", in="query", description="Minimum amount", @OA\Schema(type="integer")),
      *     @OA\Parameter(name="amount_max", in="query", description="Maximum amount", @OA\Schema(type="integer")),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Paginated list of requests",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="data", type="array", @OA\Items(type="object")),
      *             @OA\Property(property="current_page", type="integer"),
      *             @OA\Property(property="total", type="integer")
@@ -101,10 +110,13 @@ class RequestController extends Controller
      *     summary="Create new request",
      *     description="Create a new purchase request in DRAFT status",
      *     security={{"sanctum":{}}},
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"title","description","category","amount"},
+     *
      *             @OA\Property(property="title", type="string", example="New laptop for development"),
      *             @OA\Property(property="description", type="string", example="MacBook Pro 16-inch for development work"),
      *             @OA\Property(property="category", type="string", enum={"EQUIPMENT", "SOFTWARE", "SERVICE", "TRAVEL"}, example="EQUIPMENT"),
@@ -113,11 +125,14 @@ class RequestController extends Controller
      *             @OA\Property(property="urgency", type="string", enum={"NORMAL", "URGENT"}, example="NORMAL")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=201,
      *         description="Request created successfully",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=422, description="Validation error")
      * )
      */
@@ -146,18 +161,23 @@ class RequestController extends Controller
      *     summary="Get request details",
      *     description="Get detailed information about a specific request",
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
      *         description="Request ID",
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Request details",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=404, description="Request not found"),
      *     @OA\Response(response=403, description="Unauthorized")
      * )
@@ -182,16 +202,21 @@ class RequestController extends Controller
      *     summary="Update request",
      *     description="Update a request in DRAFT status",
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
      *         description="Request ID",
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="title", type="string"),
      *             @OA\Property(property="description", type="string"),
      *             @OA\Property(property="category", type="string", enum={"EQUIPMENT", "SOFTWARE", "SERVICE", "TRAVEL"}),
@@ -199,11 +224,14 @@ class RequestController extends Controller
      *             @OA\Property(property="vendor_name", type="string")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Request updated successfully",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=422, description="Cannot update non-DRAFT request"),
      *     @OA\Response(response=404, description="Request not found")
      * )
@@ -219,8 +247,8 @@ class RequestController extends Controller
             return response()->json([
                 'error' => [
                     'code' => 'INVALID_STATUS',
-                    'message' => 'Only DRAFT requests can be updated'
-                ]
+                    'message' => 'Only DRAFT requests can be updated',
+                ],
             ], 422);
         }
 
@@ -240,18 +268,23 @@ class RequestController extends Controller
      *     summary="Submit request",
      *     description="Submit a request for approval",
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
      *         description="Request ID",
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Request submitted successfully",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=422, description="Submit failed"),
      *     @OA\Response(response=404, description="Request not found")
      * )
@@ -271,8 +304,8 @@ class RequestController extends Controller
             return response()->json([
                 'error' => [
                     'code' => 'SUBMIT_FAILED',
-                    'message' => $e->getMessage()
-                ]
+                    'message' => $e->getMessage(),
+                ],
             ], 422);
         }
     }
@@ -286,18 +319,23 @@ class RequestController extends Controller
      *     summary="Cancel request",
      *     description="Cancel a submitted request",
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
      *         description="Request ID",
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Request cancelled successfully",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=422, description="Cancel failed"),
      *     @OA\Response(response=404, description="Request not found")
      * )
@@ -317,8 +355,8 @@ class RequestController extends Controller
             return response()->json([
                 'error' => [
                     'code' => 'CANCEL_FAILED',
-                    'message' => $e->getMessage()
-                ]
+                    'message' => $e->getMessage(),
+                ],
             ], 422);
         }
     }
@@ -332,18 +370,23 @@ class RequestController extends Controller
      *     summary="Archive request",
      *     description="Archive a request (admin only)",
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
      *         description="Request ID",
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Request archived successfully",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=403, description="Unauthorized - admin only"),
      *     @OA\Response(response=422, description="Archive failed"),
      *     @OA\Response(response=404, description="Request not found")
@@ -354,12 +397,12 @@ class RequestController extends Controller
         $requestModel = RequestModel::findOrFail($id);
 
         // Check authorization (admin only)
-        if (!in_array($request->user()->role->name, ['dept_admin', 'super_admin'])) {
+        if (! in_array($request->user()->role->name, ['dept_admin', 'super_admin'])) {
             return response()->json([
                 'error' => [
                     'code' => 'UNAUTHORIZED',
-                    'message' => 'Only admins can archive requests'
-                ]
+                    'message' => 'Only admins can archive requests',
+                ],
             ], 403);
         }
 
@@ -371,8 +414,8 @@ class RequestController extends Controller
             return response()->json([
                 'error' => [
                     'code' => 'ARCHIVE_FAILED',
-                    'message' => $e->getMessage()
-                ]
+                    'message' => $e->getMessage(),
+                ],
             ], 422);
         }
     }

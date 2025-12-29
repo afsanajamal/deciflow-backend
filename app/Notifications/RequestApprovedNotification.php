@@ -34,15 +34,15 @@ class RequestApprovedNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $url = env('FRONTEND_URL', 'http://localhost:3000') . '/requests/' . $this->request->id;
+        $url = env('FRONTEND_URL', 'http://localhost:3000').'/requests/'.$this->request->id;
 
         return (new MailMessage)
-            ->subject('Request Approved: ' . $this->request->title)
-            ->greeting('Hello ' . $this->request->user->name . ',')
+            ->subject('Request Approved: '.$this->request->title)
+            ->greeting('Hello '.$this->request->user->name.',')
             ->line('Great news! Your request has been fully approved.')
-            ->line('**Title:** ' . $this->request->title)
-            ->line('**Category:** ' . $this->request->category)
-            ->line('**Amount:** ¥' . number_format($this->request->amount))
+            ->line('**Title:** '.$this->request->title)
+            ->line('**Category:** '.$this->request->category)
+            ->line('**Amount:** ¥'.number_format($this->request->amount))
             ->action('View Request', $url)
             ->line('You can now proceed with your procurement.');
     }

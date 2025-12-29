@@ -19,10 +19,6 @@ class ApprovalService
 
     /**
      * Submit a request and generate approval steps
-     *
-     * @param Request $request
-     * @param User $user
-     * @return void
      */
     public function submitRequest(Request $request, User $user): void
     {
@@ -33,8 +29,8 @@ class ApprovalService
 
         // Validate category-specific requirements
         $validation = $this->ruleEngine->validateRequestByCategory($request);
-        if (!$validation['valid']) {
-            throw new \Exception('Validation failed: ' . implode(', ', $validation['errors']));
+        if (! $validation['valid']) {
+            throw new \Exception('Validation failed: '.implode(', ', $validation['errors']));
         }
 
         // Determine approval steps based on amount
@@ -63,9 +59,6 @@ class ApprovalService
 
     /**
      * Get the current pending approval step for a request
-     *
-     * @param Request $request
-     * @return ApprovalStep|null
      */
     public function getCurrentPendingStep(Request $request): ?ApprovalStep
     {
@@ -77,11 +70,6 @@ class ApprovalService
 
     /**
      * Approve a request at the current step
-     *
-     * @param Request $request
-     * @param User $user
-     * @param string|null $comment
-     * @return void
      */
     public function approve(Request $request, User $user, ?string $comment = null): void
     {
@@ -92,7 +80,7 @@ class ApprovalService
 
         // Get current pending step
         $currentStep = $this->getCurrentPendingStep($request);
-        if (!$currentStep) {
+        if (! $currentStep) {
             throw new \Exception('No pending approval step found');
         }
 
@@ -137,11 +125,6 @@ class ApprovalService
 
     /**
      * Reject a request at the current step
-     *
-     * @param Request $request
-     * @param User $user
-     * @param string|null $comment
-     * @return void
      */
     public function reject(Request $request, User $user, ?string $comment = null): void
     {
@@ -150,7 +133,7 @@ class ApprovalService
         }
 
         $currentStep = $this->getCurrentPendingStep($request);
-        if (!$currentStep) {
+        if (! $currentStep) {
             throw new \Exception('No pending approval step found');
         }
 
@@ -175,11 +158,6 @@ class ApprovalService
 
     /**
      * Return a request to the requester for modifications
-     *
-     * @param Request $request
-     * @param User $user
-     * @param string|null $comment
-     * @return void
      */
     public function returnRequest(Request $request, User $user, ?string $comment = null): void
     {
@@ -188,7 +166,7 @@ class ApprovalService
         }
 
         $currentStep = $this->getCurrentPendingStep($request);
-        if (!$currentStep) {
+        if (! $currentStep) {
             throw new \Exception('No pending approval step found');
         }
 
@@ -213,10 +191,6 @@ class ApprovalService
 
     /**
      * Notify all users with the required role for a given approval step
-     *
-     * @param Request $request
-     * @param int $stepNumber
-     * @return void
      */
     private function notifyApprovers(Request $request, int $stepNumber): void
     {
@@ -225,13 +199,13 @@ class ApprovalService
             ->where('status', 'pending')
             ->first();
 
-        if (!$step) {
+        if (! $step) {
             return;
         }
 
         // Get all users with the required role
         $role = Role::where('name', $step->approver_role)->first();
-        if (!$role) {
+        if (! $role) {
             return;
         }
 

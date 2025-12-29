@@ -18,28 +18,28 @@ class EnsureRole
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'error' => [
                     'code' => 'UNAUTHORIZED',
-                    'message' => 'Authentication required'
-                ]
+                    'message' => 'Authentication required',
+                ],
             ], 401);
         }
 
         // Ensure role is loaded
-        if (!$user->relationLoaded('role')) {
+        if (! $user->relationLoaded('role')) {
             $user->load('role');
         }
 
         $userRole = $user->role?->name;
 
-        if (!in_array($userRole, $roles)) {
+        if (! in_array($userRole, $roles)) {
             return response()->json([
                 'error' => [
                     'code' => 'FORBIDDEN',
-                    'message' => 'Insufficient permissions'
-                ]
+                    'message' => 'Insufficient permissions',
+                ],
             ], 403);
         }
 

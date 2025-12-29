@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use App\Models\Role;
+use App\Models\AuditLog;
 use App\Models\Department;
 use App\Models\Request;
-use App\Models\AuditLog;
+use App\Models\Role;
+use App\Models\User;
 use App\Services\StateMachineService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -16,16 +16,17 @@ class AuditLogTest extends TestCase
     use RefreshDatabase;
 
     protected $user;
+
     protected $stateMachine;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Create role and department
         $role = Role::create(['name' => 'requester']);
         $department = Department::create(['name' => 'IT']);
-        
+
         // Create user
         $this->user = User::create([
             'name' => 'Test User',
@@ -56,7 +57,7 @@ class AuditLogTest extends TestCase
         $this->stateMachine->transition($request, 'SUBMITTED', $this->user);
 
         $this->assertEquals($initialLogCount + 1, AuditLog::count());
-        
+
         $this->assertDatabaseHas('audit_logs', [
             'request_id' => $request->id,
             'user_id' => $this->user->id,
@@ -83,7 +84,7 @@ class AuditLogTest extends TestCase
         ]);
 
         $log = AuditLog::latest()->first();
-        
+
         $this->assertNotNull($log->meta);
         $this->assertEquals('Submitting for approval', $log->meta['comment']);
     }
@@ -114,10 +115,10 @@ class AuditLogTest extends TestCase
         $log->save();
 
         $log->refresh();
-        
+
         // created_at should not change
         $this->assertEquals($createdAt->timestamp, $log->created_at->timestamp);
-        
+
         // updated_at should not exist on the model
         $this->assertNull($log->updated_at);
     }
@@ -141,23 +142,23 @@ class AuditLogTest extends TestCase
         $this->stateMachine->transition($request, 'APPROVED', $this->user);
 
         $token = $this->user->createToken('test')->plainTextToken;
-        
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->getJson("/api/v1/requests/{$request->id}/audit");
 
         $response->assertStatus(200);
-        
+
         $logs = $response->json();
-        
+
         $this->assertCount(3, $logs);
-        
+
         // Verify order (oldest first)
         $this->assertEquals('DRAFT', $logs[0]['from_status']);
         $this->assertEquals('SUBMITTED', $logs[0]['to_status']);
-        
+
         $this->assertEquals('SUBMITTED', $logs[1]['from_status']);
         $this->assertEquals('IN_REVIEW', $logs[1]['to_status']);
-        
+
         $this->assertEquals('IN_REVIEW', $logs[2]['from_status']);
         $this->assertEquals('APPROVED', $logs[2]['to_status']);
     }
@@ -199,12 +200,12 @@ class AuditLogTest extends TestCase
         $this->stateMachine->transition($request2, 'SUBMITTED', $this->user);
 
         $token = $superAdmin->createToken('test')->plainTextToken;
-        
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->getJson('/api/v1/audit');
 
         $response->assertStatus(200);
-        
+
         $data = $response->json('data');
         $this->assertGreaterThanOrEqual(2, count($data));
     }
@@ -212,8 +213,8 @@ class AuditLogTest extends TestCase
     public function test_non_super_admin_cannot_view_all_audit_logs()
     {
         $token = $this->user->createToken('test')->plainTextToken;
-        
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->getJson('/api/v1/audit');
 
         $response->assertStatus(403);

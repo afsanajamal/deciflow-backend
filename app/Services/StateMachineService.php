@@ -24,18 +24,13 @@ class StateMachineService
 
     /**
      * Check if a transition is valid
-     *
-     * @param Request $request
-     * @param string $toStatus
-     * @param User $user
-     * @return bool
      */
     public function canTransition(Request $request, string $toStatus, User $user): bool
     {
         $fromStatus = $request->status;
 
         // Check if transition is allowed
-        if (!in_array($toStatus, self::TRANSITIONS[$fromStatus] ?? [])) {
+        if (! in_array($toStatus, self::TRANSITIONS[$fromStatus] ?? [])) {
             return false;
         }
 
@@ -48,17 +43,13 @@ class StateMachineService
     /**
      * Perform a state transition and log it
      *
-     * @param Request $request
-     * @param string $toStatus
-     * @param User $user
-     * @param array $meta Additional metadata
-     * @return void
+     * @param  array  $meta  Additional metadata
      */
     public function transition(Request $request, string $toStatus, User $user, array $meta = []): void
     {
         $fromStatus = $request->status;
 
-        if (!$this->canTransition($request, $toStatus, $user)) {
+        if (! $this->canTransition($request, $toStatus, $user)) {
             throw new \Exception("Invalid transition from {$fromStatus} to {$toStatus}");
         }
 
@@ -72,13 +63,6 @@ class StateMachineService
 
     /**
      * Create an audit log entry for a transition
-     *
-     * @param Request $request
-     * @param User $user
-     * @param string $fromStatus
-     * @param string $toStatus
-     * @param array $meta
-     * @return void
      */
     public function logTransition(Request $request, User $user, ?string $fromStatus, string $toStatus, array $meta = []): void
     {
@@ -94,10 +78,6 @@ class StateMachineService
 
     /**
      * Get a human-readable action name from status transition
-     *
-     * @param string|null $fromStatus
-     * @param string $toStatus
-     * @return string
      */
     private function getActionName(?string $fromStatus, string $toStatus): string
     {

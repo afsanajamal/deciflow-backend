@@ -35,18 +35,18 @@ class ApprovalRequestedNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $url = env('FRONTEND_URL', 'http://localhost:3000') . '/approvals/inbox';
+        $url = env('FRONTEND_URL', 'http://localhost:3000').'/approvals/inbox';
 
         return (new MailMessage)
-            ->subject('Approval Required: ' . $this->request->title)
+            ->subject('Approval Required: '.$this->request->title)
             ->greeting('Hello,')
             ->line('A request requires your approval.')
-            ->line('**Requester:** ' . $this->request->user->name)
-            ->line('**Title:** ' . $this->request->title)
-            ->line('**Category:** ' . $this->request->category)
-            ->line('**Amount:** ¥' . number_format($this->request->amount))
-            ->line('**Description:** ' . $this->request->description)
-            ->line('**Approval Step:** ' . $this->stepNumber)
+            ->line('**Requester:** '.$this->request->user->name)
+            ->line('**Title:** '.$this->request->title)
+            ->line('**Category:** '.$this->request->category)
+            ->line('**Amount:** ¥'.number_format($this->request->amount))
+            ->line('**Description:** '.$this->request->description)
+            ->line('**Approval Step:** '.$this->stepNumber)
             ->action('Review Request', $url)
             ->line('Please review and take action on this request.');
     }

@@ -9,7 +9,6 @@ class RuleEngineService
     /**
      * Determine approval steps based on request amount (MVP hardcoded rules)
      *
-     * @param Request $request
      * @return array Array of role names required for approval
      */
     public function determineApprovalSteps(Request $request): array
@@ -29,7 +28,6 @@ class RuleEngineService
     /**
      * Validate request based on category constraints
      *
-     * @param Request $request
      * @return array ['valid' => bool, 'errors' => array]
      */
     public function validateRequestByCategory(Request $request): array

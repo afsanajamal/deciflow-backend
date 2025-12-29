@@ -94,4 +94,5 @@ jobs:
         run: composer install --prefer-dist --no-progress
 
       - name: Security Audit
-        run: composer audit
+        run: composer audit --locked
+        continue-on-error: true

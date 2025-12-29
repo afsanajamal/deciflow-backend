@@ -35,18 +35,18 @@ class RequestRejectedNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $url = env('FRONTEND_URL', 'http://localhost:3000') . '/requests/' . $this->request->id;
+        $url = env('FRONTEND_URL', 'http://localhost:3000').'/requests/'.$this->request->id;
 
         $message = (new MailMessage)
-            ->subject('Request Rejected: ' . $this->request->title)
-            ->greeting('Hello ' . $this->request->user->name . ',')
+            ->subject('Request Rejected: '.$this->request->title)
+            ->greeting('Hello '.$this->request->user->name.',')
             ->line('Unfortunately, your request has been rejected.')
-            ->line('**Title:** ' . $this->request->title)
-            ->line('**Category:** ' . $this->request->category)
-            ->line('**Amount:** ¥' . number_format($this->request->amount));
+            ->line('**Title:** '.$this->request->title)
+            ->line('**Category:** '.$this->request->category)
+            ->line('**Amount:** ¥'.number_format($this->request->amount));
 
         if ($this->comment) {
-            $message->line('**Reason:** ' . $this->comment);
+            $message->line('**Reason:** '.$this->comment);
         }
 
         return $message

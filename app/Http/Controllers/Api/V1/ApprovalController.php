@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 class ApprovalController extends Controller
 {
     use AuthorizesRequests;
+
     public function __construct(
         private ApprovalService $approvalService
     ) {}
@@ -27,9 +28,11 @@ class ApprovalController extends Controller
      *     summary="Get approval inbox",
      *     description="Get all requests pending approval for the current user's role",
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Response(
      *         response=200,
      *         description="List of pending approvals",
+     *
      *         @OA\JsonContent(type="array", @OA\Items(type="object"))
      *     )
      * )
@@ -42,13 +45,13 @@ class ApprovalController extends Controller
         // Get requests with pending approval steps matching user's role
         $requests = RequestModel::whereHas('approvalSteps', function ($query) use ($userRole) {
             $query->where('approver_role', $userRole)
-                  ->where('status', 'pending');
+                ->where('status', 'pending');
         })
-        ->with(['user', 'department', 'approvalSteps' => function ($query) use ($userRole) {
-            $query->where('approver_role', $userRole)->where('status', 'pending');
-        }])
-        ->orderBy('created_at', 'desc')
-        ->get();
+            ->with(['user', 'department', 'approvalSteps' => function ($query) use ($userRole) {
+                $query->where('approver_role', $userRole)->where('status', 'pending');
+            }])
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return response()->json($requests);
     }
@@ -62,23 +65,31 @@ class ApprovalController extends Controller
      *     summary="Approve request",
      *     description="Approve a request at current approval step",
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
      *         description="Request ID",
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\RequestBody(
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="comment", type="string", example="Approved - looks good")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Request approved successfully",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=422, description="Approval failed"),
      *     @OA\Response(response=404, description="Request not found")
      * )
@@ -95,8 +106,8 @@ class ApprovalController extends Controller
             return response()->json([
                 'error' => [
                     'code' => 'APPROVE_FAILED',
-                    'message' => $e->getMessage()
-                ]
+                    'message' => $e->getMessage(),
+                ],
             ], 422);
         }
     }
@@ -110,25 +121,33 @@ class ApprovalController extends Controller
      *     summary="Reject request",
      *     description="Reject a request at current approval step",
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
      *         description="Request ID",
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"comment"},
+     *
      *             @OA\Property(property="comment", type="string", example="Rejected - insufficient justification")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Request rejected successfully",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=422, description="Rejection failed"),
      *     @OA\Response(response=404, description="Request not found")
      * )
@@ -145,8 +164,8 @@ class ApprovalController extends Controller
             return response()->json([
                 'error' => [
                     'code' => 'REJECT_FAILED',
-                    'message' => $e->getMessage()
-                ]
+                    'message' => $e->getMessage(),
+                ],
             ], 422);
         }
     }
@@ -160,25 +179,33 @@ class ApprovalController extends Controller
      *     summary="Return request",
      *     description="Return a request to requester for revision",
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
      *         description="Request ID",
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"comment"},
+     *
      *             @OA\Property(property="comment", type="string", example="Please provide more details about the vendor")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Request returned successfully",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=422, description="Return failed"),
      *     @OA\Response(response=404, description="Request not found")
      * )
@@ -195,8 +222,8 @@ class ApprovalController extends Controller
             return response()->json([
                 'error' => [
                     'code' => 'RETURN_FAILED',
-                    'message' => $e->getMessage()
-                ]
+                    'message' => $e->getMessage(),
+                ],
             ], 422);
         }
     }

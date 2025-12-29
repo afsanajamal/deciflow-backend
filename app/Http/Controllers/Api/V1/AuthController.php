@@ -18,26 +18,32 @@ class AuthController extends Controller
      *     tags={"Authentication"},
      *     summary="User login",
      *     description="Authenticate user and return access token",
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"email","password"},
+     *
      *             @OA\Property(property="email", type="string", format="email", example="admin@example.com"),
      *             @OA\Property(property="password", type="string", format="password", example="password")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Successful login",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="user", type="object"),
      *             @OA\Property(property="token", type="string")
      *         )
      *     ),
+     *
      *     @OA\Response(response=422, description="Validation error")
      * )
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function login(Request $request)
@@ -49,7 +55,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
@@ -76,16 +82,18 @@ class AuthController extends Controller
      *     summary="User logout",
      *     description="Revoke current access token",
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Successful logout",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="message", type="string", example="Logged out successfully")
      *         )
      *     )
      * )
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function logout(Request $request)
@@ -106,10 +114,13 @@ class AuthController extends Controller
      *     summary="Get current user",
      *     description="Get authenticated user details",
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Response(
      *         response=200,
      *         description="User details",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="id", type="integer"),
      *             @OA\Property(property="name", type="string"),
      *             @OA\Property(property="email", type="string"),
@@ -119,7 +130,6 @@ class AuthController extends Controller
      *     )
      * )
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function me(Request $request)
