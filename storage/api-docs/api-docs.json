@@ -1,0 +1,1354 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "DeciFlow API",
+        "description": "API documentation for DeciFlow - Purchase Request Approval System",
+        "contact": {
+            "email": "support@deciflow.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "API Server"
+        }
+    ],
+    "paths": {
+        "/api/v1/approvals/inbox": {
+            "get": {
+                "tags": [
+                    "Approvals"
+                ],
+                "summary": "Get approval inbox",
+                "description": "Get all requests pending approval for the current user's role",
+                "operationId": "554e8660cc53cb3bac5a4b22d1450ee9",
+                "responses": {
+                    "200": {
+                        "description": "List of pending approvals",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/requests/{id}/approve": {
+            "post": {
+                "tags": [
+                    "Approvals"
+                ],
+                "summary": "Approve request",
+                "description": "Approve a request at current approval step",
+                "operationId": "e90c3d6bb097e8947493cb7a40b01e35",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Request ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "comment": {
+                                        "type": "string",
+                                        "example": "Approved - looks good"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Request approved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Approval failed"
+                    },
+                    "404": {
+                        "description": "Request not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/requests/{id}/reject": {
+            "post": {
+                "tags": [
+                    "Approvals"
+                ],
+                "summary": "Reject request",
+                "description": "Reject a request at current approval step",
+                "operationId": "b6895e7b5d1ccd018582ede44147610c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Request ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "comment"
+                                ],
+                                "properties": {
+                                    "comment": {
+                                        "type": "string",
+                                        "example": "Rejected - insufficient justification"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Request rejected successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Rejection failed"
+                    },
+                    "404": {
+                        "description": "Request not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/requests/{id}/return": {
+            "post": {
+                "tags": [
+                    "Approvals"
+                ],
+                "summary": "Return request",
+                "description": "Return a request to requester for revision",
+                "operationId": "bd1154e8fc2650abcba19783cb729bd3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Request ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "comment"
+                                ],
+                                "properties": {
+                                    "comment": {
+                                        "type": "string",
+                                        "example": "Please provide more details about the vendor"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Request returned successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Return failed"
+                    },
+                    "404": {
+                        "description": "Request not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/requests/{id}/attachments": {
+            "get": {
+                "tags": [
+                    "Attachments"
+                ],
+                "summary": "List attachments",
+                "description": "Get all attachments for a request",
+                "operationId": "2d8f08aad73f4a6dd5efaac42b652a6d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Request ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of attachments",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Request not found"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Attachments"
+                ],
+                "summary": "Upload attachment",
+                "description": "Upload a file attachment to a request",
+                "operationId": "5b5dde6ce716551c4202ff58e15a9e09",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Request ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file"
+                                ],
+                                "properties": {
+                                    "file": {
+                                        "description": "File to upload (max 10MB)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Attachment uploaded successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "404": {
+                        "description": "Request not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/attachments/{id}": {
+            "get": {
+                "tags": [
+                    "Attachments"
+                ],
+                "summary": "Download attachment",
+                "description": "Download a file attachment",
+                "operationId": "d231512cd65e91bbb246e817c47170e5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Attachment ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File download",
+                        "content": {
+                            "application/octet-stream": {}
+                        }
+                    },
+                    "404": {
+                        "description": "Attachment not found"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Attachments"
+                ],
+                "summary": "Delete attachment",
+                "description": "Delete a file attachment",
+                "operationId": "9d090bf09bcab12eef937baddc7176c8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Attachment ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Attachment deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Attachment deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Attachment not found"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/audit": {
+            "get": {
+                "tags": [
+                    "Audit"
+                ],
+                "summary": "List all audit logs",
+                "description": "Get all audit logs across all requests (super admin only)",
+                "operationId": "e93a854a4cee132b49aa967ce67ac4ff",
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of audit logs",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "current_page": {
+                                            "type": "integer"
+                                        },
+                                        "total": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized - super admin only"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/requests/{id}/audit": {
+            "get": {
+                "tags": [
+                    "Audit"
+                ],
+                "summary": "Get request audit trail",
+                "description": "Get all audit logs for a specific request",
+                "operationId": "6460d639ed89ceef8f6f2b805c004668",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Request ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of audit logs for the request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Request not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/auth/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "User login",
+                "description": "Authenticate user and return access token",
+                "operationId": "a7997e7c1e3bfed64d4e56de82415931",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "admin@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful login",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "type": "object"
+                                        },
+                                        "token": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "User logout",
+                "description": "Revoke current access token",
+                "operationId": "f6b8957b4c0b25636613a9f0512a8ba9",
+                "responses": {
+                    "200": {
+                        "description": "Successful logout",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Logged out successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/me": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Get current user",
+                "description": "Get authenticated user details",
+                "operationId": "13b43df400e475a157538f73617b8c3d",
+                "responses": {
+                    "200": {
+                        "description": "User details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "role": {
+                                            "type": "object"
+                                        },
+                                        "department": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/requests": {
+            "get": {
+                "tags": [
+                    "Requests"
+                ],
+                "summary": "List all requests",
+                "description": "Get paginated list of requests with optional filters",
+                "operationId": "e8ba1b0f112480d4aad0b1360cb1a20a",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by status",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "DRAFT",
+                                "SUBMITTED",
+                                "IN_REVIEW",
+                                "RETURNED",
+                                "APPROVED",
+                                "REJECTED",
+                                "CANCELLED",
+                                "ARCHIVED"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Filter by category",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "EQUIPMENT",
+                                "SOFTWARE",
+                                "SERVICE",
+                                "TRAVEL"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "department_id",
+                        "in": "query",
+                        "description": "Filter by department ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "amount_min",
+                        "in": "query",
+                        "description": "Minimum amount",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "amount_max",
+                        "in": "query",
+                        "description": "Maximum amount",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "current_page": {
+                                            "type": "integer"
+                                        },
+                                        "total": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Requests"
+                ],
+                "summary": "Create new request",
+                "description": "Create a new purchase request in DRAFT status",
+                "operationId": "927dd34168a9440882d2d9d4aea3091e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "description",
+                                    "category",
+                                    "amount"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "New laptop for development"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "MacBook Pro 16-inch for development work"
+                                    },
+                                    "category": {
+                                        "type": "string",
+                                        "enum": [
+                                            "EQUIPMENT",
+                                            "SOFTWARE",
+                                            "SERVICE",
+                                            "TRAVEL"
+                                        ],
+                                        "example": "EQUIPMENT"
+                                    },
+                                    "amount": {
+                                        "description": "Amount in JPY",
+                                        "type": "integer",
+                                        "example": 300000
+                                    },
+                                    "vendor_name": {
+                                        "type": "string",
+                                        "example": "Apple Inc."
+                                    },
+                                    "urgency": {
+                                        "type": "string",
+                                        "enum": [
+                                            "NORMAL",
+                                            "URGENT"
+                                        ],
+                                        "example": "NORMAL"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Request created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/requests/{id}": {
+            "get": {
+                "tags": [
+                    "Requests"
+                ],
+                "summary": "Get request details",
+                "description": "Get detailed information about a specific request",
+                "operationId": "ccb3309007cab7ed5d86ecc7c17cb037",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Request ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Request not found"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Requests"
+                ],
+                "summary": "Update request",
+                "description": "Update a request in DRAFT status",
+                "operationId": "4f35861736adb03021ffaef6b8bf458d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Request ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "category": {
+                                        "type": "string",
+                                        "enum": [
+                                            "EQUIPMENT",
+                                            "SOFTWARE",
+                                            "SERVICE",
+                                            "TRAVEL"
+                                        ]
+                                    },
+                                    "amount": {
+                                        "type": "integer"
+                                    },
+                                    "vendor_name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Request updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Cannot update non-DRAFT request"
+                    },
+                    "404": {
+                        "description": "Request not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/requests/{id}/submit": {
+            "post": {
+                "tags": [
+                    "Requests"
+                ],
+                "summary": "Submit request",
+                "description": "Submit a request for approval",
+                "operationId": "aecd6537f25a2ae9f61df2cda92dbcbd",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Request ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request submitted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Submit failed"
+                    },
+                    "404": {
+                        "description": "Request not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/requests/{id}/cancel": {
+            "post": {
+                "tags": [
+                    "Requests"
+                ],
+                "summary": "Cancel request",
+                "description": "Cancel a submitted request",
+                "operationId": "8e0fd0ab3d0d9798e65ca31181f6340f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Request ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request cancelled successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Cancel failed"
+                    },
+                    "404": {
+                        "description": "Request not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/requests/{id}/archive": {
+            "post": {
+                "tags": [
+                    "Requests"
+                ],
+                "summary": "Archive request",
+                "description": "Archive a request (admin only)",
+                "operationId": "e0ae9da2fd4de605401b06836892a9b0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Request ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request archived successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized - admin only"
+                    },
+                    "422": {
+                        "description": "Archive failed"
+                    },
+                    "404": {
+                        "description": "Request not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/rules": {
+            "get": {
+                "tags": [
+                    "Rules"
+                ],
+                "summary": "List all rules",
+                "description": "Get all approval rules (admin only)",
+                "operationId": "6fedd30bea37502eb618c5325012ba9b",
+                "responses": {
+                    "200": {
+                        "description": "List of rules",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Rules"
+                ],
+                "summary": "Create rule",
+                "description": "Create a new approval rule (admin only)",
+                "operationId": "57d34d88926c66091f4e6efa6aaa2fcb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "min_amount",
+                                    "approval_steps_json"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Low value purchases"
+                                    },
+                                    "min_amount": {
+                                        "description": "Minimum amount in JPY",
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "max_amount": {
+                                        "description": "Maximum amount in JPY",
+                                        "type": "integer",
+                                        "example": 100000
+                                    },
+                                    "approval_steps_json": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "example": [
+                                            "dept_admin",
+                                            "approver"
+                                        ]
+                                    },
+                                    "category": {
+                                        "type": "string",
+                                        "example": "EQUIPMENT"
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Rule created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/rules/{id}": {
+            "put": {
+                "tags": [
+                    "Rules"
+                ],
+                "summary": "Update rule",
+                "description": "Update an existing approval rule (admin only)",
+                "operationId": "5876445538873b1022511b6b3b126ce5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Rule ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "min_amount": {
+                                        "type": "integer"
+                                    },
+                                    "max_amount": {
+                                        "type": "integer"
+                                    },
+                                    "approval_steps_json": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "category": {
+                                        "type": "string"
+                                    },
+                                    "is_active": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Rule updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "404": {
+                        "description": "Rule not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Rules"
+                ],
+                "summary": "Delete rule",
+                "description": "Delete an approval rule (admin only)",
+                "operationId": "d8fd4d98b3a9cbd47f2c41e14fb17fc5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Rule ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rule deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Rule deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Rule not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "sanctum": {
+                "type": "http",
+                "description": "Enter your bearer token in the format: Bearer {token}",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Approvals",
+            "description": "Approvals"
+        },
+        {
+            "name": "Attachments",
+            "description": "Attachments"
+        },
+        {
+            "name": "Audit",
+            "description": "Audit"
+        },
+        {
+            "name": "Authentication",
+            "description": "Authentication"
+        },
+        {
+            "name": "Requests",
+            "description": "Requests"
+        },
+        {
+            "name": "Rules",
+            "description": "Rules"
+        }
+    ]
+}
